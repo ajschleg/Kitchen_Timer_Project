@@ -12,6 +12,7 @@
 #include <pic18f4331.h>
 #include "config.h"
 #include "lcd.h"
+#include "led.h"
 
 /*
  * File:   led_message.c
@@ -24,22 +25,21 @@
 void main(void) 
 {  
     TRISB = 0x00; //set port B as output
+    TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
     OSCCON = 0x76;
 
     LCD_Init();
     
     while(1)
     {
-        
-        LATBbits.LATB0 =~LATBbits.LATB0; //inverse port RB0 LED
+        Blink_Red();
         LCD_String_xy(1,5,"ASS");
-        __delay_ms(1000);
+        __delay_ms(50);
         LCD_Clear();
  
-
-        LATBbits.LATB0 =~LATBbits.LATB0; //inverse port RB0 LED
+        Blink_Blue();
         LCD_String_xy(1,5,"ALERT");
-        __delay_ms(1000);
+        __delay_ms(50);
         LCD_Clear();
 
     }

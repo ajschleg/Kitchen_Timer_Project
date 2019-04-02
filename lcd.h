@@ -16,21 +16,18 @@ extern "C" {
 #include <xc.h>
 #include "config.h"
 
-#define RS LATB1                   /* PORTD 0 pin is used for Register Select */
-#define EN LATB2                   /* PORTD 1 pin is used for Enable */
-#define ldata LATD                 /* PORTB is used for transmitting data to LCD */
-
-#define LCD_Port TRISD              
-#define LCD_Control TRISB
+#define RS LATB1                   /* PORTB 1 pin is used for Register Select */
+#define EN LATB2                   /* PORTB 2 pin is used for Enable */
+#define ldata LATD                 /* PORTD is used for transmitting data to LCD 8 bit mode*/
 
     
-void LCD_Init();
+void LCD_Init(void);
     
 void LCD_Command(char);
 
 void LCD_Char(char data);
 
-void LCD_Clear();
+void LCD_Clear(void);
 
 void LCD_String_xy(char ,char ,const char *);
 

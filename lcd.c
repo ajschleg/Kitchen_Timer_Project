@@ -7,8 +7,6 @@
 void LCD_Init()
 {
     __delay_ms(15);           /* 15ms,16x2 LCD Power on delay */
-    LCD_Port = 0x00;       /* Set PORTB as output PORT for LCD data(D0-D7) pins */
-    //LCD_Control = 0x00;    /* Set PORTD as output PORT LCD Control(RS,EN) Pins */
     LCD_Command(0x38);     /* uses 2 line and initialize 5*7 matrix of LCD */
     LCD_Command(0x01);     /* clear display screen */
     LCD_Command(0x0c);     /* display on cursor off */
