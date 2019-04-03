@@ -29,7 +29,9 @@ void LCD_Char(char data);
 
 void LCD_Clear(void);
 
-void LCD_String_xy(char ,char ,const char *);
+void LCD_Char_xy(char ,char ,const char );
+void LCD_String_xy(char, char, const char*);
+
 
 void LCD_String(const char *);
 

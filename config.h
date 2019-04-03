@@ -75,6 +75,9 @@ extern "C" {
 // Use project enums instead of #define for ON and OFF.
 
 #define _XTAL_FREQ 8000000
+    
+    typedef unsigned int U16;
+    typedef unsigned char U8;
 #ifdef	__cplusplus
 }
 #endif

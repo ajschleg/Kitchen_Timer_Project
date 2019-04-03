@@ -1,0 +1,23 @@
+/* 
+ * File:   timer0.h
+ * Author: austinschlegel
+ *
+ * Created on April 2, 2019, 10:22 PM
+ */
+
+#ifndef TIMER0_H
+#define	TIMER0_H
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+    void Init_timer0(void);
+
+
+#ifdef	__cplusplus
+}
+#endif
+
+#endif	/* TIMER0_H */
+

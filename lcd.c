@@ -20,7 +20,7 @@ void LCD_Command(char cmd )
     EN = 1;                /* High-to-Low pulse on Enable pin to latch data */ 
     NOP();
     EN = 0;
-    __delay_ms(30);	
+    __delay_ms(10);	
 }
 
 void LCD_Char(char data)
@@ -38,7 +38,7 @@ void LCD_Clear()
     LCD_Command(0x01);
 }
 
-void LCD_String_xy(char row,char pos,const char *msg)
+void LCD_Char_xy(char row,char pos,const char msg)
 {
     char location=0;
     if(row<=1)
@@ -51,7 +51,23 @@ void LCD_String_xy(char row,char pos,const char *msg)
         location=(0xC0) | ((pos) & 0x0f); /*Print message on 2nd row and desired location*/
         LCD_Command(location);    
     }  
-    LCD_String(msg);
+    LCD_Char(msg);
+}
+
+void LCD_String_xy(char row,char pos,const char* msg)
+{
+    char location=0;
+    if(row<=1)
+    {
+        location=(0x80) | ((pos) & 0x0f); /*Print message on 1st row and desired location*/
+        LCD_Command(location);
+    }
+    else
+    {
+        location=(0xC0) | ((pos) & 0x0f); /*Print message on 2nd row and desired location*/
+        LCD_Command(location);    
+    }  
+    LCD_String(*msg);
 }
 
 void LCD_String(const char *msg)
