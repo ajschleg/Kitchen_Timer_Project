@@ -24,6 +24,9 @@
  * Created on March 9, 2019, 9:10 PM
  */
 
+U8 u8_to_BCD(U8 num);
+
+U8 count;
 
 void main(void) 
 {  
@@ -31,20 +34,21 @@ void main(void)
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
     OSCCON = 0x76;
 
+    count = 0;
     
-    LCD_Init();
     Init_timer0();
+    LCD_Init();
+
     
     while(1)
     {
-        LCD_String_xy(1,5,"ASS");
         __delay_ms(50);
-        LCD_Clear();
+        //LCD_Clear();
  
         Blink_Blue();
-        LCD_String_xy(1,5,"ALERT");
+        //LCD_String_xy(1,5,"ALERT");
         __delay_ms(50);
-        LCD_Clear();
+        //LCD_Clear();
 
     }
 }
@@ -54,11 +58,29 @@ __interrupt() void ISR(void)
 
     if(INTCONbits.T0IF)
     {
-        //sprintf(buffer, "%d", counter);
         Blink_Red();
 
+        u8_to_BCD(count);
 
-        TMR0 = 0xB3B4;
+        TMR0 = 0xE17A;
         INTCONbits.T0IF = 0;
     }
+    count++;
+}
+
+U8 u8_to_BCD(U8 num)
+{
+    U8 hundreds;
+    U8 tens;
+    U8 ones;
+    
+    hundreds = num/100 + 48;
+    tens = (num%100)/10 + 48;
+    ones = (num%10) + 48;
+    LCD_Char_xy(1,0,hundreds);
+    LCD_Char_xy(1,1,tens);
+    LCD_Char_xy(1,2,ones);
+
+    
+    return ones;
 }
