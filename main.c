@@ -24,14 +24,15 @@
  * Created on March 9, 2019, 9:10 PM
  */
 
-U8 u8_to_BCD(U8 num);
+void u8_to_BCD(U16 num);
 
-U8 count;
+U16 count;
 
 void main(void) 
 {  
     TRISB = 0x00; //set port B as output
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
+    TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
 
     count = 0;
@@ -39,17 +40,23 @@ void main(void)
     Init_timer0();
     LCD_Init();
 
-    
+    U8 status = 0;
+    Toggle_Blue();
     while(1)
     {
-        __delay_ms(50);
-        //LCD_Clear();
- 
-        Blink_Blue();
-        //LCD_String_xy(1,5,"ALERT");
-        __delay_ms(50);
-        //LCD_Clear();
 
+        do{
+            status = PORTCbits.RC0;         // Read the pin
+            __delay_ms(10);                   // Introduce a delay between each read
+        }while(!status);                    // keep reading till a LOW
+        __delay_ms(100);                      // Switchpress detected  - debouncing delay
+        status = PORTCbits.RC0;             // read again
+        if (!status)                        // check the pin status
+        {
+            // Switch Pressed, Do something for showing off
+            Toggle_Blue();
+        }
+       LCD_Char_xy(2,0,status+48);
     }
 }
 
@@ -58,9 +65,9 @@ __interrupt() void ISR(void)
 
     if(INTCONbits.T0IF)
     {
-        Blink_Red();
+        Toggle_Red();
 
-        u8_to_BCD(count);
+        //u8_to_BCD(count);
 
         TMR0 = 0xE17A;
         INTCONbits.T0IF = 0;
@@ -68,7 +75,7 @@ __interrupt() void ISR(void)
     count++;
 }
 
-U8 u8_to_BCD(U8 num)
+void u8_to_BCD(U16 num)
 {
     U8 hundreds;
     U8 tens;
@@ -80,7 +87,4 @@ U8 u8_to_BCD(U8 num)
     LCD_Char_xy(1,0,hundreds);
     LCD_Char_xy(1,1,tens);
     LCD_Char_xy(1,2,ones);
-
-    
-    return ones;
 }

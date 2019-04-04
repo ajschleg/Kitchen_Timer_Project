@@ -14,8 +14,8 @@ extern "C" {
     
 #include <pic18f4331.h>
 
-    void Blink_Red(void);
-    void Blink_Blue(void);
+    void Toggle_Red(void);
+    void Toggle_Blue(void);
 
 
 #ifdef	__cplusplus
