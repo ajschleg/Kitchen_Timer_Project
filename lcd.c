@@ -69,7 +69,7 @@ void LCD_String_xy(char row,char pos,const char* msg)
         location=(0xC0) | ((pos) & 0x0f); /*Print message on 2nd row and desired location*/
         LCD_Command(location);    
     }  
-    LCD_String(*msg);
+    LCD_String(msg);
 }
 
 void LCD_String(const char *msg)

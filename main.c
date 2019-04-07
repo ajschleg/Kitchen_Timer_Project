@@ -57,8 +57,10 @@ void main(void)
         {
             // Switch Pressed, Do something for showing off
         }*/
+        LCD_String_xy(2,0,"HELLO");
         while(1)
         {
+            
         }
     }
 }
