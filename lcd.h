@@ -16,8 +16,8 @@ extern "C" {
 #include <xc.h>
 #include "config.h"
 
-#define RS LATB1                   /* PORTB 1 pin is used for Register Select */
-#define EN LATB2                   /* PORTB 2 pin is used for Enable */
+#define RS LATB0                   /* PORTB 0 pin is used for Register Select */
+#define EN LATB1                   /* PORTB 1 pin is used for Enable */
 #define ldata LATD                 /* PORTD is used for transmitting data to LCD 8 bit mode*/
 
     

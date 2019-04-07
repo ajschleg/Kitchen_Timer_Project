@@ -16,6 +16,12 @@ extern "C" {
 
     void Toggle_Red(void);
     void Toggle_Blue(void);
+    void Toggle_Green(void);
+    void Toggle_4(void);
+
+#define blue_led LATBbits.LATB4
+#define red_led LATBbits.LATB2
+#define green_led LATBbits.LATB3
 
 
 #ifdef	__cplusplus

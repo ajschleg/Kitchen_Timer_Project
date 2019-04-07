@@ -32,20 +32,22 @@ void main(void)
 {  
     TRISB = 0x00; //set port B as output
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
-    TRISCbits.RC0 = 1; // Assign RE0 as input from PB
+    //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
 
     count = 0;
     
-    Init_timer0();
     LCD_Init();
 
+    Init_timer0();
+
     U8 status = 0;
+    Toggle_Red();
     Toggle_Blue();
     while(1)
     {
-
-        do{
+        __delay_ms(50);
+        /*do{
             status = PORTCbits.RC0;         // Read the pin
             __delay_ms(10);                   // Introduce a delay between each read
         }while(!status);                    // keep reading till a LOW
@@ -54,20 +56,20 @@ void main(void)
         if (!status)                        // check the pin status
         {
             // Switch Pressed, Do something for showing off
-            Toggle_Blue();
+        }*/
+        while(1)
+        {
         }
-       LCD_Char_xy(2,0,status+48);
     }
 }
 
 __interrupt() void ISR(void)
 {
-
     if(INTCONbits.T0IF)
     {
-        Toggle_Red();
+        Toggle_Green();
 
-        //u8_to_BCD(count);
+        u8_to_BCD(count);
 
         TMR0 = 0xE17A;
         INTCONbits.T0IF = 0;

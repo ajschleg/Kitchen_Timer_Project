@@ -5,9 +5,18 @@
 
 void Toggle_Red()
 {
-    LATBbits.LATB0 =~LATBbits.LATB0; //inverse port RB0 LED
+    red_led =~red_led; //inverse port RB0 LED
 }
 void Toggle_Blue()
 {
-    LATBbits.LATB3 =~LATBbits.LATB3; //inverse port RB3 LED
+    blue_led =~blue_led; //inverse port RB3 LED
 }
+void Toggle_Green()
+{
+    green_led =~green_led;
+}
+void Toggle_4(void)
+{
+    LATBbits.LATB5 =~LATBbits.LATB5;
+}
+

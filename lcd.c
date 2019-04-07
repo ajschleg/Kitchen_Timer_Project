@@ -2,6 +2,7 @@
 #include <xc.h>
 #include <pic18f4331.h>   
 #include "lcd.h"
+#include "led.h"
 
 
 void LCD_Init()
@@ -11,6 +12,7 @@ void LCD_Init()
     LCD_Command(0x01);     /* clear display screen */
     LCD_Command(0x0c);     /* display on cursor off */
     LCD_Command(0x06);     /* increment cursor (shift cursor to right) */
+    //Toggle_Green();
 }
 
 void LCD_Command(char cmd )
@@ -20,7 +22,7 @@ void LCD_Command(char cmd )
     EN = 1;                /* High-to-Low pulse on Enable pin to latch data */ 
     NOP();
     EN = 0;
-    __delay_ms(10);	
+    __delay_ms(30);	
 }
 
 void LCD_Char(char data)
