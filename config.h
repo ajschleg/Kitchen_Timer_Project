@@ -78,6 +78,9 @@ extern "C" {
     
     typedef unsigned int U16;
     typedef unsigned char U8;
+    
+    void u8_to_BCD(U16 num, U8 row, U8 column);
+
 #ifdef	__cplusplus
 }
 #endif

@@ -16,6 +16,8 @@
 #include "lcd.h"
 #include "led.h"
 #include "timer0.h"
+#include "TempSensor.h"
+#include "Potentiometer.h"
 
 /*
  * File:   led_message.c
@@ -24,7 +26,6 @@
  * Created on March 9, 2019, 9:10 PM
  */
 
-void u8_to_BCD(U16 num);
 
 U16 count;
 
@@ -37,13 +38,20 @@ void main(void)
 
     count = 0;
     
-    LCD_Init();
-
+    
     Init_timer0();
+    LCD_Init();
+    InitDHT11();
+    InitPot();
+   
 
     U8 status = 0;
+    U16 result = 0;
+    
     Toggle_Red();
     Toggle_Blue();
+    
+    LCD_String_xy(2,0,"HELLO");
     while(1)
     {
         __delay_ms(50);
@@ -57,11 +65,7 @@ void main(void)
         {
             // Switch Pressed, Do something for showing off
         }*/
-        LCD_String_xy(2,0,"HELLO");
-        while(1)
-        {
-            
-        }
+        result = ReadPot();
     }
 }
 
@@ -71,7 +75,7 @@ __interrupt() void ISR(void)
     {
         Toggle_Green();
 
-        u8_to_BCD(count);
+        u8_to_BCD(count,1,0);
 
         TMR0 = 0xE17A;
         INTCONbits.T0IF = 0;
@@ -79,7 +83,7 @@ __interrupt() void ISR(void)
     count++;
 }
 
-void u8_to_BCD(U16 num)
+void u8_to_BCD(U16 num, U8 row, U8 column)
 {
     U8 hundreds;
     U8 tens;
@@ -88,7 +92,9 @@ void u8_to_BCD(U16 num)
     hundreds = num/100 + 48;
     tens = (num%100)/10 + 48;
     ones = (num%10) + 48;
-    LCD_Char_xy(1,0,hundreds);
-    LCD_Char_xy(1,1,tens);
-    LCD_Char_xy(1,2,ones);
+    LCD_Char_xy(row,column,hundreds);
+    LCD_Char_xy(row,column+1,tens);
+    LCD_Char_xy(row,column+2,ones);
+    LCD_Char_xy(row,column+3, ' ');
+    LCD_Char_xy(row,column+4, ' '); //clear the space after the count. for some reason there are random numbers here.
 }
