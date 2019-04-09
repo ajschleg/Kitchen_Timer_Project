@@ -24,7 +24,7 @@ U8 ReadPot(void)
     result = ADRESH; //set result equal to the value read
 
 
-    u8_to_BCD(result, 2, 8);
+    //u8_to_BCD(result, 2, 7);
     return result;
 }
 

@@ -17,15 +17,14 @@ extern "C" {
 #include <pic18f4331.h>
 #include "config.h"
 
-#define DHT11 LATAbits.LA1
-#define DHT11_ddr TRISAbits.RA1;
+#define DHT11_ddr TRISCbits.RC4
+#define DHT11 LATCbits.LATC4
     
 
-   void InitDHT11(void);
-   void CheckDHT11(void);
+   void StartDHT11(void);
+   void CheckResponseDHT11(void);
    U8 ReadDHT11(void);
    
-   U8 check = 0;
 
 
 #ifdef	__cplusplus

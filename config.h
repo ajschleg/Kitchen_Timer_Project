@@ -81,6 +81,11 @@ extern "C" {
     
     void u8_to_BCD(U16 num, U8 row, U8 column);
 
+    U16 count;
+    U8 check = 0;
+
+
+
 #ifdef	__cplusplus
 }
 #endif
