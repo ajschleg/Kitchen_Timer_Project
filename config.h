@@ -79,10 +79,9 @@ extern "C" {
     typedef unsigned int U16;
     typedef unsigned char U8;
     
-    void u8_to_BCD(U16 num, U8 row, U8 column);
+    void u8_to_BCD(U8 row, U8 column, U16 num);
 
     U16 count;
-    U8 check = 0;
 
 
 

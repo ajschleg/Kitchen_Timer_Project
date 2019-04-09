@@ -38,31 +38,29 @@ void main(void)
     count = 0;
     
     
-    Init_timer0();
+    //Init_timer0();
     LCD_Init();
     InitPot();
    
 
     U8 status = 0;
     U16 result = 0;
-    U8 Temp = 0;
-    U8 RH = 0;
-    U8 Sum;
+    U8 CheckSum;
     U8 RH_byte1;
     U8 RH_byte2;
     U8 T_byte1;
     U8 T_byte2;
-    U8 temp_override = 1;
+    U8 temp_override = 0;
     
     Toggle_Red();
     Toggle_Blue();
     
-    LCD_String_xy(2,0,"HELLO");
+    //LCD_String_xy(2,0,"HELLO");
     
     while(1)
     {
         //Toggle_Red();
-        __delay_ms(50);
+        //__delay_ms(50);
         /*do{
             status = PORTCbits.RC0;         // Read the pin
             __delay_ms(10);                   // Introduce a delay between each read
@@ -73,27 +71,36 @@ void main(void)
         {
             // Switch Pressed, Do something for showing off
         }*/
+        
         result = ReadPot();
         StartDHT11();
-        CheckResponseDHT11();
-        if(check)
+        
+        if(CheckResponseDHT11())
         {
             // Read the 40 bit received message
             RH_byte1 = ReadDHT11();
             RH_byte2 = ReadDHT11();
             T_byte1 = ReadDHT11();
             T_byte2 = ReadDHT11();
-            Sum = ReadDHT11();
-            if(Sum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0XFF) || temp_override)
+            CheckSum = ReadDHT11();
+            
+            u8_to_BCD(1,0,RH_byte1);
+            u8_to_BCD(1,4,RH_byte2);
+            u8_to_BCD(2,0,T_byte1);
+            u8_to_BCD(2,4,T_byte1);
+            u8_to_BCD(2,8,CheckSum);
+            
+            if(CheckSum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0xFF) || temp_override)
             {
-                Temp = T_byte1;
-                RH = RH_byte1;
-                LCD_String_xy(1, 8, "T:  C");
-                LCD_String_xy(2, 8, "RH: %");
-                LCD_Char_xy(1, 13, 48 + ((Temp / 10) % 10));
-                LCD_Char_xy(1, 14, 48 + (Temp % 10));
-                LCD_Char_xy(2, 13, 48 + ((RH / 10) % 10));
-                LCD_Char_xy(2, 14, 48 + (RH % 10));
+                Toggle_Blue();
+                //LCD_String_xy(1, 8, "T:  C");
+                //LCD_String_xy(2, 8, "RH: %");
+                u8_to_BCD(1,13, T_byte1);
+                u8_to_BCD(2,13, RH_byte1);
+            }
+            else
+            {
+                Toggle_Red();
             }
         }
     }
@@ -113,7 +120,7 @@ __interrupt() void ISR(void)
     count++;
 }
 
-void u8_to_BCD(U16 num, U8 row, U8 column)
+void u8_to_BCD(U8 row, U8 column, U16 num)
 {
     U8 hundreds;
     U8 tens;

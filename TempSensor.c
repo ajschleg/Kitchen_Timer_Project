@@ -10,21 +10,20 @@ void StartDHT11()
 {
     //I think Im going to have to replace delays with timers
     DHT11_ddr = 0; //configure as output
-    DHT11 = 0; //send 0
+    DHT11 = 0; //send 0 to to start
     
-    __delay_ms(18); //low retention time
+    __delay_ms(25); //let DHT11 detect signal
     
-    DHT11 = 1; //send 1
+    DHT11 = 1; //send 1 to wait for response
     
-    __delay_ms(30); //pulled wait
-    DHT11_ddr = 1; //make input
+    __delay_ms(30); //Pull up voltage to wait
+    DHT11_ddr = 1; //set as input
     
 }
 
-void CheckResponseDHT11()
+U8 CheckResponseDHT11()
 {
     //maybe use timer here
-    check = 0;
     __delay_us(40);
     if (DHT11 == 0)
     {
@@ -32,8 +31,8 @@ void CheckResponseDHT11()
     }
     if (DHT11 == 1) 
     {
-        check = 1; 
-        __delay_us(40); //ready to receive data
+        __delay_us(50); //ready to receive data
+        return 1; 
     }
 }
     
@@ -44,11 +43,15 @@ U8 ReadDHT11()
     U8 tiout;
     
     //check if tiout occurred
-    Toggle_Blue();
     if(tiout)
     {
         Toggle_Red();
+        LCD_String_xy(1,8,"TiOut");
         return 0;
+    }
+    else
+    {
+        LCD_String_xy(1,8,"     ");
     }
     
     for(j = 0; j < 8; j++)
@@ -64,9 +67,9 @@ U8 ReadDHT11()
         }
             
 
-        __delay_us(28); // If we wait 30 us and the signal is still high we know it is "1"
+        __delay_us(30); // If we wait 30 us and the signal is still high we know it is "1"
         
-        if(DHT11 == 0)
+        if(DHT11 == 0) //it must be "0"
         {
             i &= ~(1<<(7 - j)); //Clear bit (7-b)
         }
@@ -86,7 +89,6 @@ U8 ReadDHT11()
             }
         }
     }
-    Toggle_Blue();
     return i;
 }
 
