@@ -35,13 +35,16 @@ void main(void)
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
 
-    count = 0;
+    ms_delay = 0;
+    us_delay = 0;
     
+    second_count = 0;
+    ten_us_count = 0;
     
-    //Init_timer0();
-    LCD_Init();
-    InitPot();
-   
+
+    //LCD_Init();
+    //InitPot();
+    Init_timer0();
 
     U8 status = 0;
     U16 result = 0;
@@ -56,6 +59,8 @@ void main(void)
     Toggle_Blue();
     
     //LCD_String_xy(2,0,"HELLO");
+    
+    //_ms_delay(10);
     
     while(1)
     {
@@ -72,10 +77,10 @@ void main(void)
             // Switch Pressed, Do something for showing off
         }*/
         
-        result = ReadPot();
-        StartDHT11();
+        //result = ReadPot();
+        //StartDHT11();
         
-        if(CheckResponseDHT11())
+        /*if(CheckResponseDHT11())
         {
             // Read the 40 bit received message
             RH_byte1 = ReadDHT11();
@@ -95,30 +100,74 @@ void main(void)
                 Toggle_Blue();
                 //LCD_String_xy(1, 8, "T:  C");
                 //LCD_String_xy(2, 8, "RH: %");
-                u8_to_BCD(1,13, T_byte1);
-                u8_to_BCD(2,13, RH_byte1);
+                //u8_to_BCD(1,13, T_byte1);
+                //u8_to_BCD(2,13, RH_byte1);
             }
             else
             {
                 Toggle_Red();
             }
-        }
+        }*/
     }
 }
 
-__interrupt() void ISR(void)
+// <editor-fold defaultstate="collapsed" desc="comment">
+void __interrupt () ISR(void)
 {
-    if(INTCONbits.T0IF)
+    //Maybe need to check for overflow and int enable bits for timer 0, but timer should be only thing causing interrupt so 
+    //probably dont need to worry about it
+    
+    
+    //check for faster timer first
+    //Check if 10us timer overflowed
+    if(us_delay)
     {
+        //if overflow increment counter and set flag
+        ten_us_count++;
         Toggle_Green();
-
-        u8_to_BCD(count,1,0);
-
-        TMR0 = 0xE17A;
-        INTCONbits.T0IF = 0;
+                //check is second (10000 10us's = 1second)
+        /*if(ten_us_count == 10000)
+        {
+            ten_us_count = 0;
+            second_count++;
+            Toggle_Red();
+        }*/
+        
+        if(ten_us_count == delay_amt)
+        {
+            //us_delay = 0;
+            ten_us_count = 0;
+            Toggle_Red();
+        }
+        TMR0 = 0x9B; //reset to 15.5us
+        TMR0IF = 0;
     }
-    count++;
+    //check if millisecond
+    else if(ms_delay)
+    {
+        ms_count++;
+        Toggle_Green();
+        
+        if(ms_count == 1000)
+        {
+            //one second occurred
+            //reset
+            ms_count = 0;
+            second_count++;
+            Toggle_Blue();
+        }
+        
+        TMR0 = 0xF0;
+        TMR0IF = 0;
+    }
+    else if(s_delay)
+    {
+        
+    }
 }
+
+
+
 
 void u8_to_BCD(U8 row, U8 column, U16 num)
 {

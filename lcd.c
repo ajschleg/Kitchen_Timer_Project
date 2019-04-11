@@ -7,7 +7,7 @@
 
 void LCD_Init()
 {
-    __delay_ms(15);           /* 15ms,16x2 LCD Power on delay */
+    //__delay_ms(15);           /* 15ms,16x2 LCD Power on delay */
     LCD_Command(0x38);     /* uses 2 line and initialize 5*7 matrix of LCD */
     LCD_Command(0x01);     /* clear display screen */
     LCD_Command(0x0c);     /* display on cursor off */
@@ -22,7 +22,7 @@ void LCD_Command(char cmd )
     EN = 1;                /* High-to-Low pulse on Enable pin to latch data */ 
     NOP();
     EN = 0;
-    __delay_ms(30);	
+    //__delay_ms(30);	
 }
 
 void LCD_Char(char data)
@@ -32,7 +32,7 @@ void LCD_Char(char data)
 	EN=1;                  /* High-to-Low pulse on Enable pin to latch data */   
 	NOP();
 	EN=0;
-	__delay_ms(10);
+	//__delay_ms(10);
 }
 
 void LCD_Clear()

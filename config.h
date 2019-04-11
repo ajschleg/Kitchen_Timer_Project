@@ -74,16 +74,22 @@ extern "C" {
 // #pragma config statements should precede project file includes.
 // Use project enums instead of #define for ON and OFF.
 
-#define _XTAL_FREQ 8000000
+    //I think 40MHz is max
+#//define _XTAL_FREQ 8000000 //40MHz
     
     typedef unsigned int U16;
     typedef unsigned char U8;
     
     void u8_to_BCD(U8 row, U8 column, U16 num);
 
-    U16 count;
+    U16 second_count;
+    U16 ten_us_count;
+    U16 ms_count;
+    U8 delay_amt;
 
-
+    U8 us_delay;
+    U8 ms_delay;
+    U8 s_delay;
 
 #ifdef	__cplusplus
 }

@@ -12,11 +12,11 @@ void StartDHT11()
     DHT11_ddr = 0; //configure as output
     DHT11 = 0; //send 0 to to start
     
-    __delay_ms(25); //let DHT11 detect signal
+    //__delay_ms(25); //let DHT11 detect signal
     
     DHT11 = 1; //send 1 to wait for response
     
-    __delay_ms(30); //Pull up voltage to wait
+    //__delay_ms(30); //Pull up voltage to wait
     DHT11_ddr = 1; //set as input
     
 }
@@ -24,14 +24,14 @@ void StartDHT11()
 U8 CheckResponseDHT11()
 {
     //maybe use timer here
-    __delay_us(40);
+    //__delay_us(40);
     if (DHT11 == 0)
     {
-        __delay_us(80); //response signal
+        //__delay_us(80); //response signal
     }
     if (DHT11 == 1) 
     {
-        __delay_us(50); //ready to receive data
+        //__delay_us(50); //ready to receive data
         return 1; 
     }
 }
@@ -67,7 +67,7 @@ U8 ReadDHT11()
         }
             
 
-        __delay_us(30); // If we wait 30 us and the signal is still high we know it is "1"
+        //__delay_us(30); // If we wait 30 us and the signal is still high we know it is "1"
         
         if(DHT11 == 0) //it must be "0"
         {
