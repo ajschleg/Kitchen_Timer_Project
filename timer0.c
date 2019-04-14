@@ -9,8 +9,21 @@
 
 void Init_timer0(void)
 {
-    
-    _us_delay(10000);
+    TMR0IE = 0;
+    delay_amt = 10000;
+
+    TMR0 = 0x00; //Clear the timer0 register
+    /*TMR0 = 
+     40MHz/4 = 10MHz
+     10MHz = 0.1us
+     T overflow = 25.5us
+     so, to get 10us set TMR0 = 15.5 (25.5 - 15.5)*/
+    TMR0 = 0xE6; // 10uS
+    T0CON = 0xC8; //8bit no prescalar
+    INTCONbits.GIE = 1; // Global interrupt enable 
+    INTCONbits.TMR0IE = 1; // Enable interrpt for when timer 0 overflows
+
+    us_delay_flg = 1;  
 
 }
 
@@ -18,31 +31,37 @@ void _ms_delay(U16 delay)
 {
     //stop timer interrupt for short time
     TMR0IE = 0;
+   
+    delay_amt = delay;
+    
     TMR0 = 0x00;
     //set the timer so that it will overflow and interrupt every 1ms
-    TMR0 = 0x63; //set to start at 99/255
+    TMR0 = 0xD7; //set to start at 25/255
     T0CON = 0xC5; //set timer to 8 bit and prescalar of 64
-        // enable timer interrupt
-    TMR0IE = 1;
+    TMR0IE = 1;     // enable timer interrupt
     
-    ms_delay = 1;
-
+    ms_delay_flg = 1;
+    while(ms_delay_flg)
+    { 
+        //get interrupted
+    }   
+    
 }
 
 void _us_delay(U16 delay)
 {
+    TMR5IE = 0;
     delay_amt = delay;
-    TMR0IE = 0;
-    TMR0 = 0x00; //Clear the timer0 register
-    /*TMR0 = 
-     40MHz/4 = 10MHz
-     10MHz = 0.1us
-     T overflow = 25.5us
-     so, to get 10us set TMR0 = 15.5 (25.5 - 15.5)*/
-    TMR0 = 0x9B; // 10uS
-    T0CON = 0xC8; //8bit no prescalar
-    INTCONbits.GIE = 1; // Global interrupt enable 
-    INTCONbits.TMR0IE = 1; // Enable interrpt for when timer 0 overflows
 
-    us_delay = 1;    
+    TMR5 = 0x00; //Clear the timer0 register
+    /*TMR0 = 
+     10MHz/4 = 2.5MHz
+     2.5MHz = 0.4us
+     T overflow = 102us
+     so, to get 10us set TMR0 = e6*/
+    TMR5 = 0x00; // 10uS
+    T5CONbits.T5MOD = 1; //single shot mode enabled 
+    PR5 = delay; //set max value to delay
+    T5CONbits.TMR5ON = 1; //timer 5 on
+    TMR5IE = 1;     // enable timer interrupt
 }

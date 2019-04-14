@@ -35,16 +35,18 @@ void main(void)
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
 
-    ms_delay = 0;
-    us_delay = 0;
+    ms_delay_flg = 0;
+    us_delay_flg = 0;
     
-    second_count = 0;
-    ten_us_count = 0;
+    s_count = 0;
+    us_count = 0;
     
 
-    //LCD_Init();
-    //InitPot();
-    Init_timer0();
+    //Init_timer0();
+    ei();
+    InitPot();
+    LCD_Init();
+
 
     U8 status = 0;
     U16 result = 0;
@@ -58,9 +60,8 @@ void main(void)
     Toggle_Red();
     Toggle_Blue();
     
-    //LCD_String_xy(2,0,"HELLO");
+    LCD_String_xy(2,0,"HELLO");
     
-    //_ms_delay(10);
     
     while(1)
     {
@@ -76,38 +77,11 @@ void main(void)
         {
             // Switch Pressed, Do something for showing off
         }*/
-        
-        //result = ReadPot();
-        //StartDHT11();
-        
-        /*if(CheckResponseDHT11())
-        {
-            // Read the 40 bit received message
-            RH_byte1 = ReadDHT11();
-            RH_byte2 = ReadDHT11();
-            T_byte1 = ReadDHT11();
-            T_byte2 = ReadDHT11();
-            CheckSum = ReadDHT11();
-            
-            u8_to_BCD(1,0,RH_byte1);
-            u8_to_BCD(1,4,RH_byte2);
-            u8_to_BCD(2,0,T_byte1);
-            u8_to_BCD(2,4,T_byte1);
-            u8_to_BCD(2,8,CheckSum);
-            
-            if(CheckSum == ((RH_byte1+RH_byte2+T_byte1+T_byte2) & 0xFF) || temp_override)
-            {
-                Toggle_Blue();
-                //LCD_String_xy(1, 8, "T:  C");
-                //LCD_String_xy(2, 8, "RH: %");
-                //u8_to_BCD(1,13, T_byte1);
-                //u8_to_BCD(2,13, RH_byte1);
-            }
-            else
-            {
-                Toggle_Red();
-            }
-        }*/
+        _us_delay(60000);
+        Toggle_Blue();
+        result = ReadPot();
+        u8_to_BCD(1,0,result);
+
     }
 }
 
@@ -117,52 +91,22 @@ void __interrupt () ISR(void)
     //Maybe need to check for overflow and int enable bits for timer 0, but timer should be only thing causing interrupt so 
     //probably dont need to worry about it
     
-    
-    //check for faster timer first
-    //Check if 10us timer overflowed
-    if(us_delay)
-    {
-        //if overflow increment counter and set flag
-        ten_us_count++;
-        Toggle_Green();
-                //check is second (10000 10us's = 1second)
-        /*if(ten_us_count == 10000)
-        {
-            ten_us_count = 0;
-            second_count++;
-            Toggle_Red();
-        }*/
-        
-        if(ten_us_count == delay_amt)
-        {
-            //us_delay = 0;
-            ten_us_count = 0;
-            Toggle_Red();
-        }
-        TMR0 = 0x9B; //reset to 15.5us
-        TMR0IF = 0;
-    }
     //check if millisecond
-    else if(ms_delay)
+    if(TMR0IF)
     {
+
         ms_count++;
-        Toggle_Green();
         
-        if(ms_count == 1000)
+        if(ms_count == delay_amt)
         {
-            //one second occurred
             //reset
+            ms_delay_flg = 0;
             ms_count = 0;
-            second_count++;
-            Toggle_Blue();
+            TMR0IE = 0;
         }
         
-        TMR0 = 0xF0;
+        TMR0 = 0xD7;
         TMR0IF = 0;
-    }
-    else if(s_delay)
-    {
-        
     }
 }
 
