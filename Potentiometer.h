@@ -15,8 +15,8 @@ extern "C" {
 #include <pic18f4331.h>
 #include "config.h"
 
-    void InitPot(void);
-    U8 ReadPot(void);
+    void InitADC(void);
+    U16 ReadPot(void);
 
 
 #ifdef	__cplusplus

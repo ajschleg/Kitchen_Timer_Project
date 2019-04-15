@@ -17,7 +17,8 @@ extern "C" {
 #include <pic18f4331.h>
 #include "config.h"
 
-
+    U16 ReadTemp(void);
+    
 #ifdef	__cplusplus
 }
 #endif

@@ -44,29 +44,21 @@ void main(void)
 
     //Init_timer0();
     ei();
-    InitPot();
+    InitADC();
     LCD_Init();
 
 
     U8 status = 0;
     U16 result = 0;
-    U8 CheckSum;
-    U8 RH_byte1;
-    U8 RH_byte2;
-    U8 T_byte1;
-    U8 T_byte2;
-    U8 temp_override = 0;
+    U16 temperature = 0;
     
     Toggle_Red();
     Toggle_Blue();
     
-    LCD_String_xy(2,0,"HELLO");
     
     
     while(1)
     {
-        //Toggle_Red();
-        //__delay_ms(50);
         /*do{
             status = PORTCbits.RC0;         // Read the pin
             __delay_ms(10);                   // Introduce a delay between each read
@@ -77,7 +69,12 @@ void main(void)
         {
             // Switch Pressed, Do something for showing off
         }*/
-        _us_delay(60000);
+        
+        temperature = ReadTemp();
+        u8_to_BCD(2,0,temperature);
+
+        _ms_delay(500);
+        
         Toggle_Blue();
         result = ReadPot();
         u8_to_BCD(1,0,result);
@@ -104,7 +101,6 @@ void __interrupt () ISR(void)
             ms_count = 0;
             TMR0IE = 0;
         }
-        
         TMR0 = 0xD7;
         TMR0IF = 0;
     }

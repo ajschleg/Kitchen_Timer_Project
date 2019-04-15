@@ -15,7 +15,6 @@ extern "C" {
     void Init_timer0(void);
 
     void _ms_delay(U16);
-    void _us_delay(U16);
 
 #ifdef	__cplusplus
 }
