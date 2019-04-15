@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+    void InitPWM(void);
+    void setDutyCycle(U8);
+    void tone_out(unsigned char tone , unsigned int delay); //produce duty cycle & keep tone playing for delay time
 
 
 

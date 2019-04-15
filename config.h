@@ -75,7 +75,22 @@ extern "C" {
 // Use project enums instead of #define for ON and OFF.
 
     //I think 40MHz is max
-#//define _XTAL_FREQ 8000000 //40MHz
+//#define _XTAL_FREQ 8000000 //40MHz
+    //Declaration of Notes
+
+//birthday song notes
+//				ms				  HZ	
+#define A4		78				//440 		
+#define B4b		74				//466			
+#define C4		132				//261
+#define C4_1	130	
+#define C5		65				//523		
+#define D4		117				//293	
+#define D4b		124				//277				
+#define E4		105				//329			
+#define F4		98				//349			
+#define G4		88				//392	
+
     
     typedef unsigned int U16;
     typedef unsigned char U8;
@@ -84,12 +99,11 @@ extern "C" {
     void u8_to_BCD(U8 row, U8 column, U16 num);
 
     U16 s_count;
-    U16 us_count;
     U16 ms_count;
     U16 delay_amt;
-    U16 delay_holder;
+    U8 counter;
 
-    U8 us_delay_flg;
+
     U8 ms_delay_flg;
     U8 s_delay_flg;
 

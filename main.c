@@ -18,10 +18,11 @@
 #include "timer0.h"
 #include "TempSensor.h"
 #include "Potentiometer.h"
+#include "Speaker.h"
 
 /*
  * File:   led_message.c
- * Author: Flynn
+ * Author: austinschlegel
  *
  * Created on March 9, 2019, 9:10 PM
  */
@@ -34,29 +35,37 @@ void main(void)
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
-
-    ms_delay_flg = 0;
-    us_delay_flg = 0;
     
-    s_count = 0;
-    us_count = 0;
-    
+    //stop song notes and delay period
+    unsigned int stopsong[] = {1,0};
+    unsigned int delay_period0[] = {1,0};
 
+    //birthday song notes and delay period
+	U8 birthday[] = {C4,C4,D4,C4,F4,E4,C4_1,C4,D4,C4,G4,F4,C4_1,C4,C5,A4,F4,E4,D4,B4b,B4b,A4,F4,G4,F4,0};
+	U8 delay_period[] = {1,1,2,2,2,3,1,1,2,2,2,3,1,1,2,2,2,2,3,1,1,2,2,2,3,0};
+
+ 
     //Init_timer0();
     ei();
     InitADC();
-    LCD_Init();
+    //LCD_Init();
 
 
     U8 status = 0;
     U16 result = 0;
     U16 temperature = 0;
+    U8 wait = 0;
+    
+    
+    ms_delay_flg = 0;
+    
+    s_count = 0;
+    
+    counter = 0;
     
     Toggle_Red();
     Toggle_Blue();
-    
-    
-    
+
     while(1)
     {
         /*do{
@@ -70,14 +79,19 @@ void main(void)
             // Switch Pressed, Do something for showing off
         }*/
         
+        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
+        {
+                PR2 = (birthday[wait]/2);                       // generate PWM period
+                tone_out(birthday[wait],delay_period[wait]*6000);
+        }
         temperature = ReadTemp();
-        u8_to_BCD(2,0,temperature);
+        //u8_to_BCD(2,0,temperature);
 
-        _ms_delay(500);
+        _ms_delay(100);
         
         Toggle_Blue();
         result = ReadPot();
-        u8_to_BCD(1,0,result);
+        //u8_to_BCD(1,0,result);
 
     }
 }
@@ -87,8 +101,7 @@ void __interrupt () ISR(void)
 {
     //Maybe need to check for overflow and int enable bits for timer 0, but timer should be only thing causing interrupt so 
     //probably dont need to worry about it
-    
-    //check if millisecond
+    //check if timer 0 interrupt flag
     if(TMR0IF)
     {
 
