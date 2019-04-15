@@ -15,7 +15,7 @@ U16 ReadTemp(void)
     while(ADCON0bits.GO == 1)
         ;
     result = 0x00; //reset
-    result = (ADRESH  + 10)*9/5+32;              /*Combine 8-bit LSB and 2-bit MSB*/
+    result = (ADRESH+10)*9/5+32;              /*Combine 8-bit LSB and 2-bit MSB*/
 
     //turn off
     return result;
