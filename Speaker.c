@@ -11,7 +11,10 @@ void InitPWM(void)
     CCP1CONbits.CCP1M3 = 1;
     CCP1CONbits.CCP1M2 = 1;
     //CCP1CON = 0x0A; //PWM mode
-    CCPR2L = 0x00;             // Initialize the PR2 registers
+    
+    PR2 = 249;
+    
+    CCPR1L = 0x00;             // Initialize the PR2 registers
     
     // timer 2 setup 
     T2CONbits.T2CKPS1 = 1;            // Timer 2 prescaler 
@@ -20,12 +23,24 @@ void InitPWM(void)
     
     
     TRISCbits.RC2 = 0x00; //clkear bit 2
+    
+//    CCP1CON = 0b00001100;
+//    TRISC = 0b11111001;
+//    T2CON = 0b00000100;
+//    PR2 = 249;
+//    CCPR1L = 25;
+    
+    
+//    while(1) {
+//        CCPR1L = 125;
+//        _delay(125000);
+//    }
 }
 
 void setDutyCycle(U8 duty_cycle)
 {
     CCP1CON = (CCP1CON & 0b00001111) | (0b00110000 & ((unsigned int)(duty_cycle << 4)));
-	CCPR2L = duty_cycle >> 2;
+	CCPR1L = duty_cycle >> 2;
 }
 
 void tone_out(unsigned char tone , unsigned int delay) //produce duty cycle & keep tone playing for delay time

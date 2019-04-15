@@ -49,7 +49,8 @@ void main(void)
     ei();
     InitADC();
     //LCD_Init();
-
+    InitPWM();
+    setDutyCycle(50);
 
     U8 status = 0;
     U16 result = 0;
@@ -92,6 +93,8 @@ void main(void)
         Toggle_Blue();
         result = ReadPot();
         //u8_to_BCD(1,0,result);
+        
+//        tone_out(25, 10000);
 
     }
 }
