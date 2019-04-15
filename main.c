@@ -16,6 +16,8 @@
 #include "lcd.h"
 #include "led.h"
 #include "timer0.h"
+#include "TempSensor.h"
+#include "Potentiometer.h"
 
 /*
  * File:   led_message.c
@@ -24,9 +26,7 @@
  * Created on March 9, 2019, 9:10 PM
  */
 
-void u8_to_BCD(U16 num);
 
-U16 count;
 
 void main(void) 
 {  
@@ -35,51 +35,81 @@ void main(void)
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
 
-    count = 0;
+    ms_delay_flg = 0;
+    us_delay_flg = 0;
     
+    s_count = 0;
+    us_count = 0;
+    
+
+    //Init_timer0();
+    ei();
+    InitADC();
     LCD_Init();
 
-    Init_timer0();
 
     U8 status = 0;
+    U16 result = 0;
+    U16 temperature = 0;
+    
     Toggle_Red();
     Toggle_Blue();
+    
+    
+    
     while(1)
     {
-        __delay_ms(50);
         /*do{
             status = PORTCbits.RC0;         // Read the pin
             __delay_ms(10);                   // Introduce a delay between each read
         }while(!status);                    // keep reading till a LOW
-        __delay_ms(100);                      // Switchpress detected  - debouncing delay
+        __delay_ms(100);                      // Switch press detected  - de-bouncing delay
         status = PORTCbits.RC0;             // read again
         if (!status)                        // check the pin status
         {
             // Switch Pressed, Do something for showing off
         }*/
-        LCD_String_xy(2,0,"HELLO");
-        while(1)
-        {
-            
-        }
+        
+        temperature = ReadTemp();
+        u8_to_BCD(2,0,temperature);
+
+        _ms_delay(500);
+        
+        Toggle_Blue();
+        result = ReadPot();
+        u8_to_BCD(1,0,result);
+
     }
 }
 
-__interrupt() void ISR(void)
+// <editor-fold defaultstate="collapsed" desc="comment">
+void __interrupt () ISR(void)
 {
-    if(INTCONbits.T0IF)
+    //Maybe need to check for overflow and int enable bits for timer 0, but timer should be only thing causing interrupt so 
+    //probably dont need to worry about it
+    
+    //check if millisecond
+    if(TMR0IF)
     {
-        Toggle_Green();
 
-        u8_to_BCD(count);
-
-        TMR0 = 0xE17A;
-        INTCONbits.T0IF = 0;
+        ms_count++;
+        
+        if(ms_count == delay_amt)
+        {
+            //reset
+            ms_delay_flg = 0;
+            ms_count = 0;
+            TMR0IE = 0;
+        }
+        TMR0 = 0xD7;
+        TMR0IF = 0;
     }
-    count++;
 }
 
-void u8_to_BCD(U16 num)
+
+
+
+void u8_to_BCD(U8 row, U8 column, U16 num)
 {
     U8 hundreds;
     U8 tens;
@@ -88,7 +118,9 @@ void u8_to_BCD(U16 num)
     hundreds = num/100 + 48;
     tens = (num%100)/10 + 48;
     ones = (num%10) + 48;
-    LCD_Char_xy(1,0,hundreds);
-    LCD_Char_xy(1,1,tens);
-    LCD_Char_xy(1,2,ones);
+    LCD_Char_xy(row,column,hundreds);
+    LCD_Char_xy(row,column+1,tens);
+    LCD_Char_xy(row,column+2,ones);
+    LCD_Char_xy(row,column+3, ' ');
+    LCD_Char_xy(row,column+4, ' '); //clear the space after the count. for some reason there are random numbers here.
 }

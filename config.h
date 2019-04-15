@@ -17,7 +17,7 @@ extern "C" {
 // 'C' source line config statements
 
 // CONFIG1H
-#pragma config OSC = IRCIO      // Oscillator Selection bits (Internal oscillator block, port function on RA6 and port function on RA7)
+#pragma config OSC = HSPLL      // Oscillator Selection bits (HS oscillator, PLL enabled (clock frequency = 4 x FOSC1))
 #pragma config FCMEN = ON       // Fail-Safe Clock Monitor Enable bit (Fail-Safe Clock Monitor enabled)
 #pragma config IESO = ON        // Internal External Oscillator Switchover bit (Internal External Switchover mode enabled)
 
@@ -74,10 +74,25 @@ extern "C" {
 // #pragma config statements should precede project file includes.
 // Use project enums instead of #define for ON and OFF.
 
-#define _XTAL_FREQ 8000000
+    //I think 40MHz is max
+#//define _XTAL_FREQ 8000000 //40MHz
     
     typedef unsigned int U16;
     typedef unsigned char U8;
+    typedef unsigned long int U32;
+    
+    void u8_to_BCD(U8 row, U8 column, U16 num);
+
+    U16 s_count;
+    U16 us_count;
+    U16 ms_count;
+    U16 delay_amt;
+    U16 delay_holder;
+
+    U8 us_delay_flg;
+    U8 ms_delay_flg;
+    U8 s_delay_flg;
+
 #ifdef	__cplusplus
 }
 #endif
