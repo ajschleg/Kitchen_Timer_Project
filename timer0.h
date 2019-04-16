@@ -14,7 +14,6 @@ extern "C" {
 #include "config.h"
     void Init_timer0(void);
 
-    void _ms_delay(U16);
 
 #ifdef	__cplusplus
 }

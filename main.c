@@ -45,13 +45,14 @@ void main(void)
 	U8 delay_period[] = {1,1,2,2,2,3,1,1,2,2,2,3,1,1,2,2,2,2,3,1,1,2,2,2,3,0};
 
  
-    //Init_timer0();
-    ei();
     InitADC();
-    //LCD_Init();
+    LCD_Init();
     InitPWM();
     setDutyCycle(50);
+    Init_timer0();
 
+    LCD_String_xy(1,0,"HELLO");
+    
     U8 status = 0;
     U16 result = 0;
     U16 temperature = 0;
@@ -80,44 +81,28 @@ void main(void)
             // Switch Pressed, Do something for showing off
         }*/
         
-        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
-        {
-                PR2 = (birthday[wait]/2);                       // generate PWM period
-                tone_out(birthday[wait],delay_period[wait]*6000);
-        }
-        temperature = ReadTemp();
+//        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
+//        {
+//                PR2 = (birthday[wait]/2);                       // generate PWM period
+//                tone_out(birthday[wait],delay_period[wait]*6000);
+//        }
+//        temperature = ReadTemp();
         //u8_to_BCD(2,0,temperature);
 
-        _ms_delay(100);
-        
-        Toggle_Blue();
-        result = ReadPot();
-        //u8_to_BCD(1,0,result);
-        
-//        tone_out(25, 10000);
-
+        //Toggle_Blue();
+        //result = ReadPot();
+        u8_to_BCD(1,0,s_count);
     }
 }
 
-// <editor-fold defaultstate="collapsed" desc="comment">
 void __interrupt () ISR(void)
 {
-    //Maybe need to check for overflow and int enable bits for timer 0, but timer should be only thing causing interrupt so 
-    //probably dont need to worry about it
-    //check if timer 0 interrupt flag
+    // Check if timer 0 interrupt flag want to interrupt as little as possible
+    // Also want timer ISR as small as possible to keep good time
     if(TMR0IF)
     {
-
-        ms_count++;
-        
-        if(ms_count == delay_amt)
-        {
-            //reset
-            ms_delay_flg = 0;
-            ms_count = 0;
-            TMR0IE = 0;
-        }
-        TMR0 = 0xD7;
+        s_count++;
+        TMR0 = 0x0BFA; 
         TMR0IF = 0;
     }
 }

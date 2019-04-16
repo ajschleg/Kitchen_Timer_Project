@@ -17,7 +17,7 @@ extern "C" {
 // 'C' source line config statements
 
 // CONFIG1H
-#pragma config OSC = HSPLL      // Oscillator Selection bits (HS oscillator, PLL enabled (clock frequency = 4 x FOSC1))
+#pragma config OSC = IRCIO      // Oscillator Selection bits (Internal oscillator block, port function on RA6 and port function on RA7)
 #pragma config FCMEN = ON       // Fail-Safe Clock Monitor Enable bit (Fail-Safe Clock Monitor enabled)
 #pragma config IESO = ON        // Internal External Oscillator Switchover bit (Internal External Switchover mode enabled)
 
@@ -75,7 +75,7 @@ extern "C" {
 // Use project enums instead of #define for ON and OFF.
 
     //I think 40MHz is max
-//#define _XTAL_FREQ 8000000 //40MHz
+#define _XTAL_FREQ 8000000 //8MHz
     //Declaration of Notes
 
 //birthday song notes
