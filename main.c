@@ -47,7 +47,6 @@ void main(void)
     U8 status = 0;
     U16 result = 0;
     U16 temperature = 0;
-    U8 wait = 0;
     U8 potDivider = 0;
     U8 selection = 0;
     
@@ -63,12 +62,7 @@ void main(void)
 
     while(1)
     {
-        
-//        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
-//        {
-//                PR2 = (birthday[wait]/2);                       // generate PWM period
-//                tone_out(birthday[wait],delay_period[wait]*6000);
-//        }        
+       
         
         //poll till button is pressed
         while(PORTCbits.RC0)
@@ -117,7 +111,7 @@ void __interrupt () ISR(void)
         {
             //turn off the timer and play the tune
             TMR0ON = 0;
-            turnSpeakerOn();
+            playSong();
             __delay_ms(1000);
             turnSpeakerOff();
             Toggle_Red();

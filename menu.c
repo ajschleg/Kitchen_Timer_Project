@@ -13,7 +13,7 @@
 
 void setTimer() 
 {
-    s_count = 100;
+    s_count = 10;
     // set seconds
 
     

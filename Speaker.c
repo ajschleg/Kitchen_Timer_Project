@@ -61,3 +61,14 @@ void turnSpeakerOn(void) {
 void turnSpeakerOff(void) {
     setDutyCycle(0);
 }
+
+
+void playSong(void)
+{
+    U8 wait = 0;
+    for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
+    {
+            PR2 = (starWars[wait]/2);                       // generate PWM period
+            tone_out(starWars[wait],delay_period3[wait]*6000);
+    } 
+}

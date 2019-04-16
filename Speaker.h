@@ -11,16 +11,38 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+//Notes
+//				ms				  HZ	
+#define A4		78				//440 		
+#define B4b		74				//466			
+#define C4		132				//261
+#define C4_1	130	
+#define C5		65				//523		
+#define D4		117				//293	
+#define D4b		124				//277				
+#define E4		105				//329			
+#define F4		98				//349			
+#define G4		88				//392	
+#define A4S     74              //466
+#define F5      49              //698
+#define D5S     55              //622
+#define D5      58              //587
+#define A5S     37              //932
+
 
     void InitPWM(void);
     void setDutyCycle(U8);
     void tone_out(unsigned char tone , unsigned int delay); //produce duty cycle & keep tone playing for delay time
     void turnSpeakerOn(void);
     void turnSpeakerOff(void);
+    void playSong(void);
     
-        //birthday song notes and delay period
-	U8 birthday[] = {C4,C4,D4,C4,F4,E4,C4_1,C4,D4,C4,G4,F4,C4_1,C4,C5,A4,F4,E4,D4,B4b,B4b,A4,F4,G4,F4,0};
-	U8 delay_period[] = {1,1,2,2,2,3,1,1,2,2,2,3,1,1,2,2,2,2,3,1,1,2,2,2,3,0};
+
+    
+    //Star Wars Theme Song notes and delay period
+    U8 starWars[] = {F4,F4,F4,A4S,F5,D5S,D5,C5,A5S,F5,D5S,D5,C5,A5S,F5,D5S,D5,D5S,C5,0};
+    U8 delay_period3[] = {2,2,2,6,6,2,2,2,6,3,2,2,2,6,3,2,2,2,6,0};
+
     
         //stop song notes and delay period
     unsigned int stopsong[] = {1,0};
