@@ -22,7 +22,7 @@ void setTimer()
     U8 potValue;
 
     // set divider for 60 values(seconds =  0:59)
-    U8 potDivider = getPotDivider(255, 60);
+    U8 potDivider = 255 / 60;
     
     // Display Timer
     two_digit_to_lcd(1, 0, timer_hrs);
@@ -35,9 +35,10 @@ void setTimer()
     while(!PB_Pressed()) {
         // blink seconds display
 
+
         // set seconds with potentiometer
-        potValue = ReadPot();
-        timer_secs = potValue / potDivider;
+        potValue = ReadPot() / potDivider;
+        timer_secs = potValue < 60 ? potValue : 59;
 
         // update to lcd
         two_digit_to_lcd(1, 6, timer_secs);
@@ -53,8 +54,8 @@ void setTimer()
         // blink minutes display
 
         // set minutes with potentiometer
-        potValue = ReadPot();
-        timer_mins = potValue / potDivider;
+        potValue = ReadPot() / potDivider;
+        timer_mins = potValue < 60 ? potValue : 59;
 
         // display to lcd
         two_digit_to_lcd(1, 3, timer_mins);
@@ -66,14 +67,14 @@ void setTimer()
     
     
     // set divider for 100 values(hrs = 0:99)
-    potDivider = getPotDivider(255, 100);
+    potDivider = 255 / 100;
     // set hours
     while(!PB_Pressed()) {
         // blink hours display
 
         // set hours with potentiometer
-        potValue = ReadPot();
-        timer_hrs = potValue / potDivider;
+        potValue = ReadPot() / potDivider;
+        timer_hrs = potValue < 100 ? potValue : 99;
 
         // display to lcd
         two_digit_to_lcd(1, 0, timer_hrs);
