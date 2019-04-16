@@ -22,7 +22,7 @@ void InitPWM(void)
 	T2CONbits.TMR2ON = 1;             // Turn on Timer 2.
     
     
-    TRISCbits.RC2 = 0x00; //clkear bit 2
+    TRISCbits.RC2 = 0x00; //clear bit 2
     
 //    CCP1CON = 0b00001100;
 //    TRISC = 0b11111001;
