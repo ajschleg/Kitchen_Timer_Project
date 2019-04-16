@@ -29,24 +29,14 @@ void main(void)
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
     
-    char menuOptionStrings[5][10];
-    
 //    menuOptionStrings[0] = (char*)malloc(10);
-    strcpy(menuOptionStrings[0], "Set Timer");
-    strcpy(menuOptionStrings[1], "Option 2");
-    strcpy(menuOptionStrings[2], "Option 3");
-    strcpy(menuOptionStrings[3], "Option 4");
-    strcpy(menuOptionStrings[4], "Option 5");
-    
-    //stop song notes and delay period
-    unsigned int stopsong[] = {1,0};
-    unsigned int delay_period0[] = {1,0};
+    strcpy(menuOptionStrings[0], "Set Timer ");
+    strcpy(menuOptionStrings[1], "Pause Time");
+    strcpy(menuOptionStrings[2], "Res. Timer");
+    strcpy(menuOptionStrings[3], "Option 4  ");
+    strcpy(menuOptionStrings[4], "Bonus     ");
 
-    //birthday song notes and delay period
-	U8 birthday[] = {C4,C4,D4,C4,F4,E4,C4_1,C4,D4,C4,G4,F4,C4_1,C4,C5,A4,F4,E4,D4,B4b,B4b,A4,F4,G4,F4,0};
-	U8 delay_period[] = {1,1,2,2,2,3,1,1,2,2,2,3,1,1,2,2,2,2,3,1,1,2,2,2,3,0};
 
- 
     InitADC();
     LCD_Init();
     InitPWM();
@@ -62,13 +52,15 @@ void main(void)
     U8 selection = 0;
     
     s_count = 0;
+    tmr_expire = 0;
     
     Toggle_Red();
     Toggle_Blue();
     potDivider = getPotDivider(255, 5);
 
     LCD_String_xy(2,3," F");
-    
+    turnSpeakerOff();
+
     while(1)
     {
         
@@ -76,24 +68,41 @@ void main(void)
 //        {
 //                PR2 = (birthday[wait]/2);                       // generate PWM period
 //                tone_out(birthday[wait],delay_period[wait]*6000);
-//        }
-        u8_to_BCD(1,0,s_count);
-        result = ReadPot();
+//        }        
         
-        
-        selection = result / potDivider;
-        LCD_String_xy(1,8,menuOptionStrings[selection]);
-        
-        
-        // PUSH BUTTON
-        PB(selection, status);
-        u8_to_BCD(1,0,s_count);
+        //poll till button is pressed
+        while(PORTCbits.RC0)
+        {
+            result = ReadPot();
+            selection = result / potDivider;
+            //LCD_String_xy(1,6,menuOptionStrings[selection]);
+            LCD_Char_xy(1,6,selection+48);
+            u8_to_BCD(1,0,s_count);
+            temperature = ReadTemp();
+            u8_to_BCD(2,0,temperature);
+        }
+        // Button Pressed
+        Toggle_Red();
 
-        
-        temperature = ReadTemp();
-        u8_to_BCD(2,0,temperature);
-        
-        
+        // Do something based on menu selection
+        switch(selection) {
+            case 0 : { //set timer
+                setTimer();
+                break;
+            }
+            case 1 : {  //pause
+                toggleTimer(0);
+                break;
+            }
+            case 2 : { //resume
+                toggleTimer(1);
+                break;
+            }
+            case 3 : { //bonus
+
+            }
+        }
+                
     }
 }
 
@@ -103,7 +112,16 @@ void __interrupt () ISR(void)
     // Also want timer ISR as small as possible to keep good time
     if(TMR0IF)
     {
-        s_count++;
+        s_count--;
+        if(s_count <= 0)
+        {
+            //turn off the timer and play the tune
+            TMR0ON = 0;
+            turnSpeakerOn();
+            __delay_ms(1000);
+            turnSpeakerOff();
+            Toggle_Red();
+        }
         TMR0 = 0x0BFA; 
         TMR0IF = 0;
     }
@@ -114,6 +132,7 @@ void __interrupt () ISR(void)
 
 void u8_to_BCD(U8 row, U8 column, U16 num)
 {
+    //this function takes 5*30ms to finish
     U8 hundreds;
     U8 tens;
     U8 ones;

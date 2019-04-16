@@ -9,7 +9,7 @@
 
 void Init_timer0(void)
 {
-
+    s_count = 1000;
     TMR0 = 0x0BFA; //Clear the timer0 register 
     T0CON = 0x84; //16bit and 32 prescalar
     INTCONbits.GIE = 1; // Global interrupt enable 

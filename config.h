@@ -99,6 +99,7 @@ extern "C" {
     void u8_to_BCD(U8 row, U8 column, U16 num);
 
     U16 s_count;
+    U8 tmr_expire;
 
 
 #ifdef	__cplusplus

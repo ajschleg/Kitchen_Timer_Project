@@ -12,8 +12,16 @@
 extern "C" {
 #endif
     
+#include <stdio.h>
+#include <string.h>
+    
 void setTimer(void);
-void PB(U8,U8);
+U8 PB(void);
+void toggleTimer(U8);
+
+    char menuOptionStrings[5][10];
+
+
 
 #ifdef	__cplusplus
 }

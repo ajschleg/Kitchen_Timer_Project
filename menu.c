@@ -13,7 +13,9 @@
 
 void setTimer() 
 {
+    s_count = 100;
     // set seconds
+
     
         // push button to go to mins
     
@@ -31,33 +33,21 @@ void setTimer()
     
 }
 
-void PB(U8 selection, U8 status)
+void toggleTimer(U8 sel)
 {
-    //status takes 110ms
-    do{
-        status = PORTCbits.RC0;         // Read the pin
-        __delay_ms(10);                   // Introduce a delay between each read
-    }while(!status);                    // keep reading till a LOW
-    __delay_ms(100);                      // Switch press detected  - de-bouncing delay
-    status = PORTCbits.RC0;             // read again
-    if (!status)                        // check the pin status
+    
+    TMR0ON = sel;
+}
+
+U8 PB(void)
+{
+    if (PORTCbits.RC0)
     {
-        // Button Pressed
-        Toggle_Red();
-
-        // Do something based on menu selection
-        switch(selection) {
-            case 0 : {
-//                    setTimer();
-                turnSpeakerOn();
-                break;
-            }
-            case 1 : {  
-//                    pauseTimer();
-                turnSpeakerOff();
-                break;
-            }
-        }
-
+        return 0;
+    }
+    
+    else
+    {
+        return 1;
     }
 }
