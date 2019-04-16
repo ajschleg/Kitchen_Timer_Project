@@ -9,7 +9,7 @@
 #include "Speaker.h"
 #include "Potentiometer.h"
 
-
+U8 PB_Pressed(void);
 
 void setTimer() 
 {
@@ -19,7 +19,6 @@ void setTimer()
     timer_mins = 0;
     timer_secs = 0;
     
-    timer_secs
     U8 potValue;
 
     // set divider for 60 values(seconds =  0:59)
@@ -33,7 +32,7 @@ void setTimer()
     two_digit_to_lcd(1, 6, timer_secs);
 
     // set seconds
-    while(!PB_Pressed) {
+    while(!PB_Pressed()) {
         // blink seconds display
 
         // set seconds with potentiometer
@@ -46,11 +45,11 @@ void setTimer()
     
     // delay (debounce)
     // extra wait to catch continued button press?
-    while (PB_Pressed) ;
+    while (PB_Pressed()) ;
 
     // pot divider still set for 60 values(minutes =  0:59)
     // set minutess
-    while(!PB_Pressed) {
+    while(!PB_Pressed()) {
         // blink minutes display
 
         // set minutes with potentiometer
@@ -63,13 +62,13 @@ void setTimer()
 
     // delay (debounce)
     // extra wait to catch continued button press?
-    while (PB_Pressed) ;    
+    while (PB_Pressed()) ;    
     
     
     // set divider for 100 values(hrs = 0:99)
     potDivider = getPotDivider(255, 100);
     // set hours
-    while(!PB_Pressed) {
+    while(!PB_Pressed()) {
         // blink hours display
 
         // set hours with potentiometer
@@ -82,7 +81,7 @@ void setTimer()
 
     // delay (debounce)
     // extra wait to catch continued button press?
-    while (PB_Pressed) ;   
+    while (PB_Pressed()) ;   
     
     // finished setting timer
     // maybe display a start/cancel at this point(shift between with pot)
