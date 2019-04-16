@@ -99,13 +99,7 @@ extern "C" {
     void u8_to_BCD(U8 row, U8 column, U16 num);
 
     U16 s_count;
-    U16 ms_count;
-    U16 delay_amt;
-    U8 counter;
 
-
-    U8 ms_delay_flg;
-    U8 s_delay_flg;
 
 #ifdef	__cplusplus
 }

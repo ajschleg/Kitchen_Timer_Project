@@ -19,14 +19,7 @@
 #include "TempSensor.h"
 #include "Potentiometer.h"
 #include "Speaker.h"
-
-/*
- * File:   led_message.c
- * Author: austinschlegel
- *
- * Created on March 9, 2019, 9:10 PM
- */
-
+#include "menu.h"
 
 
 void main(void) 
@@ -35,6 +28,15 @@ void main(void)
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
     //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
+    
+    char menuOptionStrings[5][10];
+    
+//    menuOptionStrings[0] = (char*)malloc(10);
+    strcpy(menuOptionStrings[0], "Set Timer");
+    strcpy(menuOptionStrings[1], "Option 2");
+    strcpy(menuOptionStrings[2], "Option 3");
+    strcpy(menuOptionStrings[3], "Option 4");
+    strcpy(menuOptionStrings[4], "Option 5");
     
     //stop song notes and delay period
     unsigned int stopsong[] = {1,0};
@@ -51,47 +53,47 @@ void main(void)
     setDutyCycle(50);
     Init_timer0();
 
-    LCD_String_xy(1,0,"HELLO");
     
     U8 status = 0;
     U16 result = 0;
     U16 temperature = 0;
     U8 wait = 0;
-    
-    
-    ms_delay_flg = 0;
+    U8 potDivider = 0;
+    U8 selection = 0;
     
     s_count = 0;
     
-    counter = 0;
-    
     Toggle_Red();
     Toggle_Blue();
+    potDivider = getPotDivider(255, 5);
 
+    LCD_String_xy(2,3," F");
+    
     while(1)
     {
-        /*do{
-            status = PORTCbits.RC0;         // Read the pin
-            __delay_ms(10);                   // Introduce a delay between each read
-        }while(!status);                    // keep reading till a LOW
-        __delay_ms(100);                      // Switch press detected  - de-bouncing delay
-        status = PORTCbits.RC0;             // read again
-        if (!status)                        // check the pin status
-        {
-            // Switch Pressed, Do something for showing off
-        }*/
         
 //        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
 //        {
 //                PR2 = (birthday[wait]/2);                       // generate PWM period
 //                tone_out(birthday[wait],delay_period[wait]*6000);
 //        }
-//        temperature = ReadTemp();
-        //u8_to_BCD(2,0,temperature);
-
-        //Toggle_Blue();
-        //result = ReadPot();
         u8_to_BCD(1,0,s_count);
+        result = ReadPot();
+        
+        
+        selection = result / potDivider;
+        LCD_String_xy(1,8,menuOptionStrings[selection]);
+        
+        
+        // PUSH BUTTON
+        PB(selection, status);
+        u8_to_BCD(1,0,s_count);
+
+        
+        temperature = ReadTemp();
+        u8_to_BCD(2,0,temperature);
+        
+        
     }
 }
 

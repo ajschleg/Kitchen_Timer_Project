@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 #include "config.h"
+    
     void Init_timer0(void);
 
 

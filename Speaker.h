@@ -1,6 +1,6 @@
 /* 
  * File:   Speaker.h
- * Author: austinschlegel
+ * Author: austin schlegel
  *
  * Created on April 14, 2019, 8:40 PM
  */
@@ -15,7 +15,8 @@ extern "C" {
     void InitPWM(void);
     void setDutyCycle(U8);
     void tone_out(unsigned char tone , unsigned int delay); //produce duty cycle & keep tone playing for delay time
-
+    void turnSpeakerOn(void);
+    void turnSpeakerOff(void);
 
 
 #ifdef	__cplusplus

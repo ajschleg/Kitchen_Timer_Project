@@ -50,3 +50,14 @@ void tone_out(unsigned char tone , unsigned int delay) //produce duty cycle & ke
 		setDutyCycle(tone);		//generate PWM pulse width with delay period of note
 	}							
 }
+
+void turnSpeakerOn(void) {
+//    curr_duty_cycle += 10;
+//    curr_duty_cycle = curr_duty_cycle % 110;
+//    setDutyCycle(curr_duty_cycle);
+    setDutyCycle(50);
+}
+
+void turnSpeakerOff(void) {
+    setDutyCycle(0);
+}

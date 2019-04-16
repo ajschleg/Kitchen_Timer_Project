@@ -17,6 +17,8 @@ extern "C" {
 
     void InitADC(void);
     U16 ReadPot(void);
+    U8 getPotDivider(U8 maxPotValue, U8 numMenuOptions);
+
 
 
 #ifdef	__cplusplus
