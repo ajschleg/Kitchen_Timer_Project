@@ -86,3 +86,9 @@ void LCD_String(const char *msg)
 		
 }
 
+void two_digit_to_lcd(U8 row, U8 column, U8 num)
+{
+    LCD_Char_xy(row, column, num / 10 + 48);
+    LCD_Char_xy(row, column+1, num % 10 + 48);
+}
+

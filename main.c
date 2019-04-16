@@ -26,7 +26,7 @@ void main(void)
 {  
     TRISB = 0x00; //set port B as output
     TRISD = 0x00;       /* Set PORTD as output PORT for LCD data(D0-D7) pins */
-    //TRISCbits.RC0 = 1; // Assign RE0 as input from PB
+    TRISCbits.RC0 = 1; // Assign RE0 as input from PB
     OSCCON = 0x76;
     
 //    menuOptionStrings[0] = (char*)malloc(10);
@@ -40,9 +40,8 @@ void main(void)
     InitADC();
     LCD_Init();
     InitPWM();
-    setDutyCycle(50);
+    //setDutyCycle(50);
     Init_timer0();
-
     
     U8 status = 0;
     U16 result = 0;
@@ -58,7 +57,6 @@ void main(void)
     potDivider = getPotDivider(255, 5);
 
     LCD_String_xy(2,3," F");
-    turnSpeakerOff();
 
     while(1)
     {
@@ -70,13 +68,22 @@ void main(void)
             result = ReadPot();
             selection = result / potDivider;
             //LCD_String_xy(1,6,menuOptionStrings[selection]);
-            LCD_Char_xy(1,6,selection+48);
-            u8_to_BCD(1,0,s_count);
+            LCD_Char_xy(2,6,selection+48);
+            
+            
             temperature = ReadTemp();
             u8_to_BCD(2,0,temperature);
+            
+            
+            // Display Timer
+            two_digit_to_lcd(1, 0, timer_hrs);
+            LCD_Char_xy(1, 2, ':');
+            two_digit_to_lcd(1, 3, timer_mins);
+            LCD_Char_xy(1, 5, ':');
+            two_digit_to_lcd(1, 6, timer_secs);
         }
         // Button Pressed
-        Toggle_Red();
+        Toggle_Blue();
 
         // Do something based on menu selection
         switch(selection) {
@@ -92,8 +99,12 @@ void main(void)
                 toggleTimer(1);
                 break;
             }
-            case 3 : { //bonus
-
+            case 3 : {
+                break;
+            }
+            case 4 : { //bonus
+                playBonus();
+                break;
             }
         }
                 
@@ -105,17 +116,36 @@ void __interrupt () ISR(void)
     // Check if timer 0 interrupt flag want to interrupt as little as possible
     // Also want timer ISR as small as possible to keep good time
     if(TMR0IF)
-    {
-        s_count--;
-        if(s_count <= 0)
-        {
-            //turn off the timer and play the tune
-            TMR0ON = 0;
-            playSong();
-            __delay_ms(1000);
-            turnSpeakerOff();
-            Toggle_Red();
+    {       
+        Toggle_Green();
+        if (timer_secs > 0) {
+            timer_secs--;
         }
+        else {
+
+            if (timer_mins > 0) {
+                timer_mins--;
+                timer_secs = 59;
+            }
+            else {
+
+                if (timer_hrs > 0) {
+                    timer_hrs--;
+                    timer_mins = 59;
+                }
+                else {
+                    // hours, mins, secs all reached 0
+                    Toggle_Red();
+                    //turn off the timer and play the tune
+                    TMR0ON = 0;
+                    playSong();
+                    __delay_ms(1000);
+                    turnSpeakerOff();
+                    Toggle_Red();
+                }
+            }
+        }
+
         TMR0 = 0x0BFA; 
         TMR0IF = 0;
     }

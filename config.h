@@ -100,6 +100,11 @@ extern "C" {
 
     U16 s_count;
     U8 tmr_expire;
+    
+    U16 s_count;
+    U8 timer_secs;
+    U8 timer_mins;
+    U8 timer_hrs;
 
 
 #ifdef	__cplusplus

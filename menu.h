@@ -16,7 +16,7 @@ extern "C" {
 #include <string.h>
     
 void setTimer(void);
-U8 PB(void);
+U8 PBPressed(void);
 void toggleTimer(U8);
 
     char menuOptionStrings[5][10];
