@@ -7,47 +7,96 @@
 #include "lcd.h"
 #include "menu.h"
 #include "Speaker.h"
-
+#include "Potentiometer.h"
 
 
 
 void setTimer() 
 {
-    s_count = 10;
-    // set seconds
+    // should clear or cancel current timer?
+    toggleTimer(0);
+    timer_hrs = 0;
+    timer_mins = 0;
+    timer_secs = 0;
+    
+    timer_secs
+    U8 potValue;
 
+    // set divider for 60 values(seconds =  0:59)
+    U8 potDivider = getPotDivider(255, 60);
     
-        // push button to go to mins
+    // Display Timer
+    two_digit_to_lcd(1, 0, timer_hrs);
+    LCD_Char_xy(1, 2, ':');
+    two_digit_to_lcd(1, 3, timer_mins);
+    LCD_Char_xy(1, 5, ':');
+    two_digit_to_lcd(1, 6, timer_secs);
+
+    // set seconds
+    while(!PB_Pressed) {
+        // blink seconds display
+
+        // set seconds with potentiometer
+        potValue = ReadPot();
+        timer_secs = potValue / potDivider;
+
+        // update to lcd
+        two_digit_to_lcd(1, 6, timer_secs);
+    }    
     
-    // set mins
+    // delay (debounce)
+    // extra wait to catch continued button press?
+    while (PB_Pressed) ;
+
+    // pot divider still set for 60 values(minutes =  0:59)
+    // set minutess
+    while(!PB_Pressed) {
+        // blink minutes display
+
+        // set minutes with potentiometer
+        potValue = ReadPot();
+        timer_mins = potValue / potDivider;
+
+        // display to lcd
+        two_digit_to_lcd(1, 3, timer_mins);
+    }
+
+    // delay (debounce)
+    // extra wait to catch continued button press?
+    while (PB_Pressed) ;    
     
-        // push button to go to hrs
     
-    // set hrs
+    // set divider for 100 values(hrs = 0:99)
+    potDivider = getPotDivider(255, 100);
+    // set hours
+    while(!PB_Pressed) {
+        // blink hours display
+
+        // set hours with potentiometer
+        potValue = ReadPot();
+        timer_hrs = potValue / potDivider;
+
+        // display to lcd
+        two_digit_to_lcd(1, 0, timer_hrs);
+    }
+
+    // delay (debounce)
+    // extra wait to catch continued button press?
+    while (PB_Pressed) ;   
     
-        // push button to finish
-    
-    
+    // finished setting timer
     // maybe display a start/cancel at this point(shift between with pot)
     
-    
+    // start/resume the timer
+    toggleTimer(1);
 }
 
 void toggleTimer(U8 sel)
 {
-    
     TMR0ON = sel;
 }
 
-U8 PB(void)
+U8 PB_Pressed(void)
 {
-    if (PORTCbits.RC0)
-    {
-        return 0;
-    }
-    
-    else
-    {
-        return 1;
-    }
+    return !PORTCbits.RC0;
 }

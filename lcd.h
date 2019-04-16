@@ -35,6 +35,8 @@ void LCD_String_xy(char, char, const char*);
 
 void LCD_String(const char *);
 
+void two_digit_to_lcd(U8 row, U8 column, U8 num);
+
 
 #ifdef	__cplusplus
 }

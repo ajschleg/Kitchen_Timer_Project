@@ -47,6 +47,7 @@ void main(void)
     U8 status = 0;
     U16 result = 0;
     U16 temperature = 0;
+    U8 wait = 0;
     U8 potDivider = 0;
     U8 selection = 0;
     
@@ -62,7 +63,12 @@ void main(void)
 
     while(1)
     {
-       
+        
+//        for (wait=0 ; wait<26 ; wait++)                     // loop 26 times 
+//        {
+//                PR2 = (birthday[wait]/2);                       // generate PWM period
+//                tone_out(birthday[wait],delay_period[wait]*6000);
+//        }        
         
         //poll till button is pressed
         while(PORTCbits.RC0)
@@ -71,7 +77,15 @@ void main(void)
             selection = result / potDivider;
             //LCD_String_xy(1,6,menuOptionStrings[selection]);
             LCD_Char_xy(1,6,selection+48);
-            u8_to_BCD(1,0,s_count);
+            // u8_to_BCD(1,0,s_count);
+
+            // Display Timer
+            two_digit_to_lcd(1, 0, timer_hrs);
+            LCD_Char_xy(1, 2, ':');
+            two_digit_to_lcd(1, 3, timer_mins);
+            LCD_Char_xy(1, 5, ':');
+            two_digit_to_lcd(1, 6, timer_secs);
+
             temperature = ReadTemp();
             u8_to_BCD(2,0,temperature);
         }
@@ -106,16 +120,45 @@ void __interrupt () ISR(void)
     // Also want timer ISR as small as possible to keep good time
     if(TMR0IF)
     {
-        s_count--;
-        if(s_count <= 0)
-        {
-            //turn off the timer and play the tune
-            TMR0ON = 0;
-            playSong();
-            __delay_ms(1000);
-            turnSpeakerOff();
-            Toggle_Red();
+
+        if (timer_secs > 0) {
+            timer_secs--;
         }
+        else {
+
+            if (timer_mins > 0) {
+                timer_mins--;
+                timer_secs = 59;
+            }
+            else {
+
+                if (timer_hrs > 0) {
+                    timer_hrs--;
+                    timer_mins = 59;
+                }
+                else {
+                    // hours, mins, secs all reached 0
+
+                    //turn off the timer and play the tune
+                    TMR0ON = 0;
+                    turnSpeakerOn();
+                    __delay_ms(1000);
+                    turnSpeakerOff();
+                    Toggle_Red();
+                }
+            }
+        }
+
+        // s_count--;
+        // if(s_count <= 0)
+        // {
+        //     //turn off the timer and play the tune
+        //     TMR0ON = 0;
+        //     turnSpeakerOn();
+        //     __delay_ms(1000);
+        //     turnSpeakerOff();
+        //     Toggle_Red();
+        // }
         TMR0 = 0x0BFA; 
         TMR0IF = 0;
     }

@@ -99,6 +99,9 @@ extern "C" {
     void u8_to_BCD(U8 row, U8 column, U16 num);
 
     U16 s_count;
+    U8 timer_secs;
+    U8 timer_mins;
+    U8 timer_hrs;
     U8 tmr_expire;
 
 
